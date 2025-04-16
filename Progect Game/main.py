@@ -1,24 +1,29 @@
 import pygame, controls
 from ship import Ship
+from pygame.sprite import Group
+from asteroid import Asteroids
 
 def run():
 
     WIDTH = 1366
     HEIGHT = 768
 
+    BLACK = (0, 0, 0)
+
     pygame.init()
-    screan = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Космические падальщики')
-    bg_color = (0, 0, 0)
-    ship = Ship(screan)
+    bg_color = (BLACK)
+    ship = Ship(screen)
+    bullets = Group()
+    asteroid = Asteroids(screen)
     
     while True:
-        controls.events(ship)
-
-        screan.fill(bg_color)
-        ship.output()
-        pygame.display.flip()
+        controls.events(ship, screen, bullets)
+        ship.update_ship()
+        controls.update_screen(bg_color, screen, ship, asteroid, bullets)
+        controls.update_bullets(bullets)
+        controls.update_asteroids(asteroid)
 
     
-
 run()
