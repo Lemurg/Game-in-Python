@@ -21,7 +21,7 @@ class Ship():
 
     
     def update_ship(self):
-        SPEED = 0.5
+        SPEED = 1.5
 
         if self.mright and self.rect.right < self.screen_rect.right:
             self.center += SPEED
