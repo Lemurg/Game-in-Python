@@ -1,5 +1,5 @@
 import pygame, controls
-from config import HEIGHT, WIDTH
+from config import HEIGHT, WIDTH, NUMBER_OF_ASTEROIDS
 from ship import Ship
 from pygame.sprite import Group
 from stats import Stats
@@ -7,6 +7,7 @@ from scoreboard import Scoreboard
 
 def run():
     '''Запуск игры'''
+    bg_y = 0
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Космические падальщики')
@@ -19,19 +20,20 @@ def run():
     asteroid = Group()
     stats = Stats()
     scoreboard = Scoreboard(screen, stats)
-    controls.create_asteroid(screen, asteroid, 5)
+    controls.create_asteroid(screen, asteroid, NUMBER_OF_ASTEROIDS)
     
     
     while True:
         '''Основной цикл игры'''
+        bg_y += 0.1
         controls.events(ship, screen, bullets)
         if stats.game_active:
             '''Обновление корабля, экрана, пуль и астероидов'''
             ship.update_ship()
-            controls.update_screen(bg_image, screen, scoreboard, ship, asteroid, bullets)
+            controls.update_screen(bg_image, screen, scoreboard, ship, asteroid, bullets, bg_y)
             controls.update_bullets(asteroid, stats, scoreboard, bullets)
             controls.update_asteroids(ship, asteroid, stats, screen, bullets)
 
-    
+
 if __name__ == '__main__':
     run()

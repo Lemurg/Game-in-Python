@@ -1,7 +1,7 @@
 import pygame, sys
 from bullet import Bullet
 from asteroid import Asteroids
-from config import HEIGHT, NUMBER_OF_ASTEROIDS
+from config import NUMBER_OF_ASTEROIDS, HEIGHT
 import time
 import random
 
@@ -40,12 +40,15 @@ def create_asteroid(screen, asteroids, number_of_asteroids):
         asteroid.rect.x = random.randint(0, screen.get_width() - asteroid.rect.width)
         asteroid.rect.y = random.randint(0, screen.get_height() - asteroid.rect.height)
         asteroids.add(asteroid)
-    
 
-def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets):
-    '''Обновляет экран и реализует плавную прокрутку фона'''
-    screen.fill((0, 0, 0))  # Очистка экрана
-    screen.blit(bg_image, (0, 0))
+
+def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets, bg_y):
+    '''Обновляет экран и выводит на него корабль, астероиды и пули'''
+    screen.fill((0, 0, 0))
+    if bg_y >= HEIGHT:
+        bg_y = 0
+    screen.blit(bg_image, (0, bg_y))
+    screen.blit(bg_image, (0, bg_y - HEIGHT))
     scoreboard.show_score()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
@@ -53,6 +56,7 @@ def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets):
     for asteroid in asteroids.sprites():
         asteroid.draw()
     pygame.display.flip()
+    
 
 
 def update_bullets(asteroids, stats, scoreboard, bullets):
@@ -83,7 +87,7 @@ def update_asteroids(ship, asteroids, stats, screen, bullets):
 
     # Если все астероиды ушли вниз или их уничтожили, создать новую волну
     if len(asteroids) == 0:
-        create_asteroid(screen, asteroids)
+        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS)
 
 
 def ship_kill(stats, ship, bullets, asteroids):
