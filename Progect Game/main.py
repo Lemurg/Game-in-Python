@@ -1,39 +1,37 @@
 import pygame, controls
+from config import HEIGHT, WIDTH
 from ship import Ship
 from pygame.sprite import Group
 from stats import Stats
 from scoreboard import Scoreboard
 
 def run():
-
-    WIDTH = 1366
-    HEIGHT = 768
-
-    BLACK = (0, 0, 0)
-
+    '''Запуск игры'''
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Космические падальщики')
     pygame.display.set_icon(pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/asteroid.png'))
     pygame.mouse.set_visible(False)
-    bg_color = (BLACK)
+    bg_image = pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/background.jpg')
+    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
     ship = Ship(screen)
     bullets = Group()
     asteroid = Group()
     stats = Stats()
     scoreboard = Scoreboard(screen, stats)
-
-    controls.create_asteroid(screen, asteroid)
+    controls.create_asteroid(screen, asteroid, 5)
     
     
     while True:
-        controls.events(ship, screen, bullets, asteroid)
+        '''Основной цикл игры'''
+        controls.events(ship, screen, bullets)
         if stats.game_active:
             '''Обновление корабля, экрана, пуль и астероидов'''
             ship.update_ship()
-            controls.update_screen(bg_color, screen, stats, scoreboard, ship, asteroid, bullets)
+            controls.update_screen(bg_image, screen, scoreboard, ship, asteroid, bullets)
             controls.update_bullets(asteroid, stats, scoreboard, bullets)
             controls.update_asteroids(ship, asteroid, stats, screen, bullets)
 
     
-run()
+if __name__ == '__main__':
+    run()

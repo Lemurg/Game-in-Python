@@ -1,11 +1,12 @@
 import pygame, sys
 from bullet import Bullet
 from asteroid import Asteroids
+from config import HEIGHT, NUMBER_OF_ASTEROIDS
 import time
 import random
 
 
-def events(ship, screen, bullets, asteroid):
+def events(ship, screen, bullets):
     '''Обрабатывает события'''
     for event in pygame.event.get(): 
             if event.type == pygame.QUIT: sys.exit() #Выход из игры
@@ -32,25 +33,25 @@ def events(ship, screen, bullets, asteroid):
                     sys.exit()
 
 
-def create_asteroid(screen, asteroids):
+def create_asteroid(screen, asteroids, number_of_asteroids):
     '''Создает одну полосу астероидов'''
-    for _ in range(5):  # Количество астероидов
+    for _ in range(number_of_asteroids):  # Количество астероидов
         asteroid = Asteroids(screen)
         asteroid.rect.x = random.randint(0, screen.get_width() - asteroid.rect.width)
         asteroid.rect.y = random.randint(0, screen.get_height() - asteroid.rect.height)
         asteroids.add(asteroid)
     
 
-
-def update_screen(bg_color, screen, stats, scoreboard, ship, asteroids, bullets):
-    '''Обновляет экран'''
-    screen.fill(bg_color)
+def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets):
+    '''Обновляет экран и реализует плавную прокрутку фона'''
+    screen.fill((0, 0, 0))  # Очистка экрана
+    screen.blit(bg_image, (0, 0))
     scoreboard.show_score()
-    for bullets in bullets.sprites():
-        bullets.draw_bullet()
+    for bullet in bullets.sprites():
+        bullet.draw_bullet()
     ship.output()
-    for asteroids in asteroids.sprites():
-        asteroids.draw()
+    for asteroid in asteroids.sprites():
+        asteroid.draw()
     pygame.display.flip()
 
 
@@ -76,9 +77,9 @@ def update_asteroids(ship, asteroids, stats, screen, bullets):
             asteroids.remove(asteroid)
     if pygame.sprite.spritecollideany(ship, asteroids):
         ship_kill(stats, ship, bullets, asteroids)
-    # Если хотя бы один астероид прошёл первые 20 пикселей сверху, создать новую волну
+    # Если хотя бы один астероид прошёл первые 100 пикселей сверху, создать новую волну
     if asteroid.rect.top >= 100:
-        create_asteroid(screen, asteroids)
+        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS)
 
     # Если все астероиды ушли вниз или их уничтожили, создать новую волну
     if len(asteroids) == 0:
