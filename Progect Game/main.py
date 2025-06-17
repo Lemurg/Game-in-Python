@@ -1,9 +1,10 @@
 import pygame, controls
-from config import HEIGHT, WIDTH, NUMBER_OF_ASTEROIDS
+from config import HEIGHT, WIDTH, NUMBER_OF_ASTEROIDS, RUNNING as running
 from ship import Ship
 from pygame.sprite import Group
 from stats import Stats
 from scoreboard import Scoreboard
+
 
 def run():
     '''Запуск игры'''
@@ -22,10 +23,12 @@ def run():
     scoreboard = Scoreboard(screen, stats)
     controls.create_asteroid(screen, asteroid, NUMBER_OF_ASTEROIDS)
     
-    
-    while True:
+
+    while running:
         '''Основной цикл игры'''
         bg_y += 0.1
+        if bg_y >= HEIGHT:
+            bg_y = 0
         controls.events(ship, screen, bullets)
         if stats.game_active:
             '''Обновление корабля, экрана, пуль и астероидов'''

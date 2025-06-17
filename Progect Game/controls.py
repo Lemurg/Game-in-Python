@@ -38,15 +38,13 @@ def create_asteroid(screen, asteroids, number_of_asteroids):
     for _ in range(number_of_asteroids):  # Количество астероидов
         asteroid = Asteroids(screen)
         asteroid.rect.x = random.randint(0, screen.get_width() - asteroid.rect.width)
-        asteroid.rect.y = random.randint(0, screen.get_height() - asteroid.rect.height)
+        asteroid.rect.y = random.randint(0, 100)
         asteroids.add(asteroid)
 
 
 def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets, bg_y):
     '''Обновляет экран и выводит на него корабль, астероиды и пули'''
     screen.fill((0, 0, 0))
-    if bg_y >= HEIGHT:
-        bg_y = 0
     screen.blit(bg_image, (0, bg_y))
     screen.blit(bg_image, (0, bg_y - HEIGHT))
     scoreboard.show_score()
@@ -98,6 +96,7 @@ def ship_kill(stats, ship, bullets, asteroids):
         asteroids.empty()
         ship.center = ship.screen_rect.centerx
         ship.rect.bottom = ship.screen_rect.bottom
+        ship.rect.move_ip(0,-20)
         time.sleep(1)
     else:
         print("Game Over")
