@@ -1,10 +1,11 @@
+from config import player
 import pygame
 
 class Ship():
-
+    '''Инициализация корабля'''
     def __init__(self, screen):
         self.screen = screen
-        self.image = pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/player.png')
+        self.image = player
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
         self.rect.centerx = self.screen_rect.centerx 
@@ -13,7 +14,6 @@ class Ship():
         self.rect.move_ip(0,-20)
         self.mright = False
         self.mleft = False
-
 
     
     def output(self):

@@ -9,6 +9,7 @@ class Stats():
         with open('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/highscore.txt', 'r') as file:
             self.high_score = int(file.readline())
 
+
     def reset_stats(self):
         '''Инициализирует статистику, изменяющуюся в ходе игры'''
         self.ships_left = 2

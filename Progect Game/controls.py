@@ -1,9 +1,8 @@
-import pygame, sys
+import pygame, sys, time, random
 from bullet import Bullet
 from asteroid import Asteroids
-from config import NUMBER_OF_ASTEROIDS, HEIGHT
-import time
-import random
+from stats import Stats
+from config import NUMBER_OF_ASTEROIDS, HEIGHT, BLACK, shot_sound, hit_sound, bg_sound, explosion_sound, asteroid_sound, print_text
 
 
 def events(ship, screen, bullets):
@@ -21,22 +20,27 @@ def events(ship, screen, bullets):
                 elif event.key == pygame.K_SPACE:
                     new_bullet = Bullet(screen, ship)
                     bullets.add(new_bullet)
+                    shot_sound.set_volume(0.05)
+                    shot_sound.play()
+
+                elif event.key == pygame.K_p:
+                    pause_game(Stats, screen)
             
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     ship.mright = False
 
                 elif event.key == pygame.K_a:
-                    ship.mleft = False
+                    ship.mleft = False       
 
                 elif event.key == pygame.K_ESCAPE:
                     sys.exit()
 
 
-def create_asteroid(screen, asteroids, number_of_asteroids):
+def create_asteroid(screen, asteroids, number_of_asteroids, stats):
     '''Создает одну полосу астероидов'''
     for _ in range(number_of_asteroids):  # Количество астероидов
-        asteroid = Asteroids(screen)
+        asteroid = Asteroids(screen, asteroid_speed(stats))
         asteroid.rect.x = random.randint(0, screen.get_width() - asteroid.rect.width)
         asteroid.rect.y = random.randint(0, 100)
         asteroids.add(asteroid)
@@ -56,7 +60,6 @@ def update_screen(bg_image, screen, scoreboard, ship, asteroids, bullets, bg_y):
     pygame.display.flip()
     
 
-
 def update_bullets(asteroids, stats, scoreboard, bullets):
     '''Обновляет пули и проверяет на столкновения с астероидами'''
     bullets.update()
@@ -69,6 +72,8 @@ def update_bullets(asteroids, stats, scoreboard, bullets):
             stats.score += 10 * len(asteroid)
             scoreboard.prep_score()
             check_high_score(stats, scoreboard)
+            asteroid_sound.set_volume(0.12)
+            asteroid_sound.play()
 
 
 def update_asteroids(ship, asteroids, stats, screen, bullets):
@@ -78,19 +83,20 @@ def update_asteroids(ship, asteroids, stats, screen, bullets):
         if asteroid.rect.top >= 768:
             asteroids.remove(asteroid)
     if pygame.sprite.spritecollideany(ship, asteroids):
-        ship_kill(stats, ship, bullets, asteroids)
+        ship_kill(stats, ship, bullets, asteroids, screen)
     # Если хотя бы один астероид прошёл первые 100 пикселей сверху, создать новую волну
     if asteroid.rect.top >= 100:
-        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS)
-
+        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS, stats)
     # Если все астероиды ушли вниз или их уничтожили, создать новую волну
     if len(asteroids) == 0:
-        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS)
+        create_asteroid(screen, asteroids, NUMBER_OF_ASTEROIDS, stats)
 
 
-def ship_kill(stats, ship, bullets, asteroids):
+def ship_kill(stats, ship, bullets, asteroids, screen):
     '''Изменяет состояние игры при столкновении корабля с астероидом'''
     if stats.ships_left > 0:
+        hit_sound.set_volume(0.30)
+        hit_sound.play()
         stats.ships_left -= 1
         bullets.empty()
         asteroids.empty()
@@ -99,9 +105,20 @@ def ship_kill(stats, ship, bullets, asteroids):
         ship.rect.move_ip(0,-20)
         time.sleep(1)
     else:
-        print("Game Over")
+        screen.fill(BLACK)
+        print_text("Game Over", font_size=96, center=True)
+        print_text(f"Score: {stats.score}",font_size=48, center=True, y_add=50)
+        explosion_sound.set_volume(0.2)
+        explosion_sound.play()
+        bg_sound.stop()
         stats.game_active = False
-        sys.exit()
+        while not stats.game_active:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_r:
+                        reset_game(stats, screen, ship, bullets, asteroids)
 
 
 def check_high_score(stats, scoreboard):
@@ -111,3 +128,42 @@ def check_high_score(stats, scoreboard):
         scoreboard.score_high()
         with open('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/highscore.txt', 'w') as file:
             file.write(str(stats.high_score))
+
+
+def pause_game(stats, screen):
+    '''Пауза игры'''
+    stats.game_active = False
+    screen.fill(BLACK)
+    bg_sound.stop()
+    print_text("Game Paused, press 'P' to continue", 0, 0, font_size=96, center=True)
+    
+    while not stats.game_active:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    stats.game_active = True
+                    bg_sound.play(loops=-1)
+                    pygame.display.flip()
+
+
+def reset_game(stats, screen, ship, bullets, asteroids):
+    '''Сбрасывает игру'''
+    stats.reset_stats()
+    stats.game_active = True
+    bullets.empty()
+    asteroids.empty()
+    ship.center = ship.screen_rect.centerx
+    ship.rect.bottom = ship.screen_rect.bottom
+    ship.rect.move_ip(0, -20)
+    bg_sound.play(loops=-1)
+    screen.fill(BLACK)
+    print_text("Game Reset", font_size=96, center=True)
+    time.sleep(1)
+
+
+def asteroid_speed(stats, base_speed=0.3, speed_increment=0.1, score_step=500):
+    '''Увеличивает скорость астероидов в зависимости от счета'''
+    speed = base_speed + (stats.score // score_step) * speed_increment
+    return speed

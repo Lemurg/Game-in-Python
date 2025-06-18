@@ -1,7 +1,7 @@
 import pygame
 
 class Bullet(pygame.sprite.Sprite):
-    
+    '''Класс для создания пуль корабля'''
     def __init__(self, screen, ship):
         super(Bullet, self).__init__()
         self.screen = screen

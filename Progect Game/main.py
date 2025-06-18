@@ -1,5 +1,5 @@
 import pygame, controls
-from config import HEIGHT, WIDTH, NUMBER_OF_ASTEROIDS, RUNNING as running
+from config import HEIGHT, WIDTH, NUMBER_OF_ASTEROIDS, RUNNING as running, bg_sound, bg_image, print_text
 from ship import Ship
 from pygame.sprite import Group
 from stats import Stats
@@ -14,14 +14,14 @@ def run():
     pygame.display.set_caption('Космические падальщики')
     pygame.display.set_icon(pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/asteroid.png'))
     pygame.mouse.set_visible(False)
-    bg_image = pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/background.jpg')
-    bg_image = pygame.transform.scale(bg_image, (WIDTH, HEIGHT))
+    bg_sound.set_volume(0.2)
+    bg_sound.play(loops=-1)
     ship = Ship(screen)
     bullets = Group()
     asteroid = Group()
     stats = Stats()
     scoreboard = Scoreboard(screen, stats)
-    controls.create_asteroid(screen, asteroid, NUMBER_OF_ASTEROIDS)
+    controls.create_asteroid(screen, asteroid, NUMBER_OF_ASTEROIDS, stats)
     
 
     while running:
