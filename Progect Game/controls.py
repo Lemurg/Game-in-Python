@@ -1,8 +1,8 @@
-import pygame, sys, time, random
+import pygame, sys, time, random, main
 from bullet import Bullet
 from asteroid import Asteroids
 from stats import Stats
-from config import NUMBER_OF_ASTEROIDS, HEIGHT, BLACK, shot_sound, hit_sound, bg_sound, explosion_sound, asteroid_sound, print_text
+from config import NUMBER_OF_ASTEROIDS, HEIGHT, BLACK, shot_sound, hit_sound, bg_sound_play, explosion_sound, asteroid_sound, start_button, print_text
 
 
 def events(ship, screen, bullets):
@@ -34,7 +34,15 @@ def events(ship, screen, bullets):
                     ship.mleft = False       
 
                 elif event.key == pygame.K_ESCAPE:
-                    sys.exit()
+                    main.main()
+
+            elif event.type == pygame.MOUSEMOTION:
+                mouse_pos = event.pos
+                start_button.check_hover(mouse_pos)
+
+            elif event.type == pygame.USEREVENT:
+                if event.button == start_button:
+                    return "start_game"
 
 
 def create_asteroid(screen, asteroids, number_of_asteroids, stats):
@@ -108,9 +116,10 @@ def ship_kill(stats, ship, bullets, asteroids, screen):
         screen.fill(BLACK)
         print_text("Game Over", font_size=96, center=True)
         print_text(f"Score: {stats.score}",font_size=48, center=True, y_add=50)
+        print_text(f"Нажми R для рестарта",font_size=48, center=True, y_add=350)
         explosion_sound.set_volume(0.2)
         explosion_sound.play()
-        bg_sound.stop()
+        bg_sound_play.stop()
         stats.game_active = False
         while not stats.game_active:
             for event in pygame.event.get():
@@ -134,18 +143,23 @@ def pause_game(stats, screen):
     '''Пауза игры'''
     stats.game_active = False
     screen.fill(BLACK)
-    bg_sound.stop()
-    print_text("Game Paused, press 'P' to continue", 0, 0, font_size=96, center=True)
+    bg_sound_play.stop()
+    print_text("Game Paused", 0, 0, font_size=96, center=True)
+    print_text("Press 'P' to continue", 0, 0, font_size=48, center=True, y_add=75)
     
     while not stats.game_active:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_p:
                     stats.game_active = True
-                    bg_sound.play(loops=-1)
+                    bg_sound_play.play(loops=-1)
                     pygame.display.flip()
+
+                elif event.key == pygame.K_ESCAPE:
+                    main.main()
 
 
 def reset_game(stats, screen, ship, bullets, asteroids):
@@ -157,7 +171,7 @@ def reset_game(stats, screen, ship, bullets, asteroids):
     ship.center = ship.screen_rect.centerx
     ship.rect.bottom = ship.screen_rect.bottom
     ship.rect.move_ip(0, -20)
-    bg_sound.play(loops=-1)
+    bg_sound_play.play(loops=-1)
     screen.fill(BLACK)
     print_text("Game Reset", font_size=96, center=True)
     time.sleep(1)
