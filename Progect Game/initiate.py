@@ -32,6 +32,7 @@ def run(screen):
         bg_y += 0.1
         if bg_y >= HEIGHT:
             bg_y = 0
+
         controls.events(ship, screen, bullets)
         if stats.game_active:
             '''Обновление корабля, экрана, пуль и астероидов'''

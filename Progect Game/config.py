@@ -34,9 +34,8 @@ asteroid_sound = pygame.mixer.Sound('C:/Users/fjvfh/Documents/GitHub/Game-in-Pyt
 
 
 '''Кнопки'''
-start_button = Button(WIDTH // 2 - 175, 200, 350, 100, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
-setting_button = Button(WIDTH // 2 - 175, 325, 350, 100, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
-exit_button = Button(WIDTH // 2 - 175, 450, 350, 100, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
+start_button = Button(WIDTH // 2 - 175, 200, 350, 150, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
+exit_button = Button(WIDTH // 2 - 175, 375, 350, 150, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
 
 
 '''Функции'''

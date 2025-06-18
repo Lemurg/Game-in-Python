@@ -1,4 +1,4 @@
-from config import RUNNING as running, WIDTH, HEIGHT, bg_image, bg_sound_play, bg_sound, start_button, setting_button, exit_button
+from config import RUNNING as running, WIDTH, HEIGHT, bg_image, bg_sound_play, bg_sound, start_button, exit_button
 from button import Button
 from stats import Stats
 import pygame, sys, initiate
@@ -40,16 +40,13 @@ def main():
                     sys.exit()
             
             start_button.handle_event(event)
-            setting_button.handle_event(event)
             exit_button.handle_event(event)
 
         start_button.check_hover(pygame.mouse.get_pos())
-        setting_button.check_hover(pygame.mouse.get_pos())
         exit_button.check_hover(pygame.mouse.get_pos())
 
         screen.blit(bg_image, (0, 0))
         start_button.draw(screen)
-        setting_button.draw(screen)
         exit_button.draw(screen)
 
         pygame.display.flip()
