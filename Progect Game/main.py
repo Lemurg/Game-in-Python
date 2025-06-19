@@ -20,7 +20,7 @@ def main():
     
 
     while running:
-        '''Основной цикл игры'''
+        '''Основной цикл'''
         screen.fill((0, 0, 0))
         
         for event in pygame.event.get():

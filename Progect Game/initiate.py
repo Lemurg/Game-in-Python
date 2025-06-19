@@ -8,7 +8,8 @@ from scoreboard import Scoreboard
 
 def run(screen):
     '''Запуск игры'''
-    Stats().game_active = True
+    stats = Stats()
+    stats.game_active = True
     bg_y = 0
 
     '''Инициализация звука'''
@@ -20,7 +21,6 @@ def run(screen):
     ship = Ship(screen)
     bullets = Group()
     asteroid = Group()
-    stats = Stats()
     scoreboard = Scoreboard(screen, stats)
 
     '''Создание астероидов'''

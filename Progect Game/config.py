@@ -21,6 +21,8 @@ asteroid = pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Pro
 bg_image = pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/background.jpg')
 img_start_button = 'C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/start_button.jpg'
 img_start_button_hover = 'C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/start_button_hover.jpg'
+img_exit_button = 'C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/exit_button.jpg'
+img_exit_button_hover = 'C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/exit_button_hover.jpg'
 
 
 '''Звуки'''
@@ -35,7 +37,7 @@ asteroid_sound = pygame.mixer.Sound('C:/Users/fjvfh/Documents/GitHub/Game-in-Pyt
 
 '''Кнопки'''
 start_button = Button(WIDTH // 2 - 175, 200, 350, 150, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
-exit_button = Button(WIDTH // 2 - 175, 375, 350, 150, text=None, image_path=img_start_button, hover_image_path=img_start_button_hover)
+exit_button = Button(WIDTH // 2 - 175, 375, 350, 150, text=None, image_path=img_exit_button, hover_image_path=img_exit_button_hover)
 
 
 '''Функции'''
