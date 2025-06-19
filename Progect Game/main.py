@@ -1,39 +1,56 @@
-import pygame, controls
-from ship import Ship
-from pygame.sprite import Group
+from config import RUNNING as running, WIDTH, HEIGHT, bg_image, bg_sound_play, bg_sound, start_button, exit_button
+from button import Button
 from stats import Stats
-from scoreboard import Scoreboard
+import pygame, sys, initiate
 
-def run():
 
-    WIDTH = 1366
-    HEIGHT = 768
-
-    BLACK = (0, 0, 0)
-
+def main():
+    '''Главная функция для запуска игры'''
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption('Космические падальщики')
     pygame.display.set_icon(pygame.image.load('C:/Users/fjvfh/Documents/GitHub/Game-in-Python/Progect Game/img/asteroid.png'))
-    pygame.mouse.set_visible(False)
-    bg_color = (BLACK)
-    ship = Ship(screen)
-    bullets = Group()
-    asteroid = Group()
-    stats = Stats()
-    scoreboard = Scoreboard(screen, stats)
+    Stats().game_active = False
 
-    controls.create_asteroid(screen, asteroid)
+    '''Инициализация звуков'''
+    pygame.mixer.init()
+    bg_sound.set_volume(0.02)
+    bg_sound.play(loops=-1)
+    bg_sound_play.stop()
     
-    
-    while True:
-        controls.events(ship, screen, bullets, asteroid)
-        if stats.game_active:
-            '''Обновление корабля, экрана, пуль и астероидов'''
-            ship.update_ship()
-            controls.update_screen(bg_color, screen, stats, scoreboard, ship, asteroid, bullets)
-            controls.update_bullets(asteroid, stats, scoreboard, bullets)
-            controls.update_asteroids(ship, asteroid, stats, screen, bullets)
 
-    
-run()
+    while running:
+        '''Основной цикл'''
+        screen.fill((0, 0, 0))
+        
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            elif event.type == pygame.USEREVENT:
+                if event.button == start_button:
+                    initiate.run(screen)
+
+                elif event.button == start_button:
+                    print('f')
+
+                elif event.button == exit_button:
+                    pygame.quit()
+                    sys.exit()
+            
+            start_button.handle_event(event)
+            exit_button.handle_event(event)
+
+        start_button.check_hover(pygame.mouse.get_pos())
+        exit_button.check_hover(pygame.mouse.get_pos())
+
+        screen.blit(bg_image, (0, 0))
+        start_button.draw(screen)
+        exit_button.draw(screen)
+
+        pygame.display.flip()
+
+
+if __name__ == "__main__":
+    main()
